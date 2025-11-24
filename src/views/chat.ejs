@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat - SMS Reminders</title>
+    <link rel="stylesheet" href="/styles.css">
+    <!-- Add marked.js for Markdown parsing -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+
+<body>
+    <div class="chat-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h2>Conversations</h2>
+                <button id="newConversationBtn" class="btn-icon" title="New Conversation">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                        <path d="M10 4V16M4 10H16" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                    </svg>
+                </button>
+            </div>
+
+            <div id="conversationList" class="conversation-list">
+                <!-- Conversations will be loaded here -->
+            </div>
+
+            <div class="sidebar-footer">
+                <div class="user-info">
+                    <span id="userEmail">Loading...</span>
+                </div>
+                <button id="logoutBtn" class="btn-secondary">Logout</button>
+            </div>
+        </div>
+
+        <!-- Main Chat Area -->
+        <div class="main-chat">
+            <div class="chat-header">
+                <h1 id="chatTitle">SMS Reminders Assistant</h1>
+            </div>
+
+            <div id="messageContainer" class="message-container">
+                <div class="welcome-message">
+                    <h2>👋 Welcome to SMS Reminders!</h2>
+                    <p>I'm your AI assistant. I can help you:</p>
+                    <ul>
+                        <li>Create reminders with natural language (e.g., "Remind me to call mom tomorrow at 3pm")</li>
+                        <li>List your existing reminders</li>
+                        <li>Update or delete reminders</li>
+                    </ul>
+                    <p>Just type a message to get started!</p>
+                </div>
+            </div>
+
+            <div class="typing-indicator" id="typingIndicator" style="display: none;">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+
+            <div class="input-container">
+                <form id="messageForm">
+                    <textarea id="messageInput" placeholder="Type your message..." rows="1"
+                        autocomplete="off"></textarea>
+                    <button type="submit" class="btn-send" id="sendButton">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                            <path d="M22 2L11 13M22 2L15 22L11 13M22 2L2 8L11 13" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function initChat() {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                window.location.href = '/login';
+                return;
+            }
+
+            try {
+                // Get user data from server
+                const response = await fetch('/api/auth/me', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                    },
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to fetch user data');
+                }
+
+                const data = await response.json();
+                const user = data.user;
+
+                // Populate UI
+                document.getElementById('userEmail').textContent = user.email || user.phoneNumber;
+
+                // Store globally for chat.js
+                window.user = user;
+
+                // Initialize chat app
+                if (window.initializeChatApp) {
+                    window.initializeChatApp();
+                }
+            } catch (error) {
+                console.error('Auth error:', error);
+                localStorage.removeItem('token');
+                window.location.href = '/login';
+            }
+        }
+
+        // Run initialization
+        initChat();
+    </script>
+    <script src="/chat.js"></script>
+</body>
+
+</html>

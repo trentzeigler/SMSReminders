@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - SMS Reminders</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+
+<body>
+    <div class="auth-container">
+        <div class="auth-card">
+            <h1 class="auth-title">Welcome Back</h1>
+            <p class="auth-subtitle">Sign in to your account</p>
+
+            <form id="loginForm" class="auth-form">
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required autocomplete="email">
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required autocomplete="current-password">
+                    <small><a href="/forgot-password"
+                            style="color: var(--accent-primary); text-decoration: none;">Forgot password?</a></small>
+                </div>
+
+                <div id="errorMessage" class="error-message" style="display: none;"></div>
+
+                <button type="submit" class="btn-primary" id="loginButton">
+                    <span id="loginText">Sign In</span>
+                    <span id="loginSpinner" class="spinner" style="display: none;"></span>
+                </button>
+            </form>
+
+            <p class="auth-footer">
+                Don't have an account? <a href="/signup">Sign up</a>
+            </p>
+        </div>
+    </div>
+
+    <script src="/auth.js"></script>
+</body>
+
+</html>
